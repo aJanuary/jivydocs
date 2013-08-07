@@ -1,4 +1,4 @@
-IvyDocs
+JivyDocs
 =======
 
 Allows the javadocs stored inside of an Ivy repository to be served over http.
