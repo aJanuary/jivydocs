@@ -1,0 +1,22 @@
+RewriteEngine on
+
+# The canonicaliser rule will try to add a slash to the end of unpack.php,
+# which stops it from working correctly.
+RewriteRule ^unpack.php$ unpack.php [L]
+
+# Canonicalise url by adding trailing slash to the end of module descriptor urls
+# Don't bother trying to canonicalise the urls inside a javadoc, as people are
+# unlikely to try and type them themselves, and it's too hard to figure out
+# what's a directory and what's a file.
+RewriteRule ^([^/]+(/[^/]+){0,2})$ http://%{HTTP_HOST}/$1/ [L,R=301]
+
+# Serve up cached files
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^((.+/){3}.+)$ cache/$1
+# The root of a document page uses index.html
+RewriteRule ^((.+/){2}.+)/$ cache/$1/index.html [L]
+
+# If a file doesn't exist, either create an index page if it's a module
+# descriptor url, or unpack the javadoc jar so it can be served from the cache.
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^.*$ unpack.php [L]
