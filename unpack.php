@@ -26,6 +26,12 @@
 			}
 		}
 	}
+
+	function module_has_javadocs($module_description, $archive_root) {
+		$module_root = $archive_root . '/' . join('/', $module_description->array);
+		$javadocs_pattern = $module_root . str_repeat('/*', 2 - count($module_description->array)) . '/javadocs/*.jar';
+		return count(glob($javadocs_patter)) > 0;
+	}
 	
 	function make_index($module_description, $archive_root) {
 		$archive_path = $archive_root . '/' . join('/', $module_description->array);
@@ -38,8 +44,7 @@
 		echo '<!doctype html><head><title>JivyDocs</title></head><body><h1>Documentations</h1><h2>' . join(' / ', $module_description->array) . '</h2><ul>';
  
 		foreach (scandir($archive_path) as $dir) {
-			$javadocs_pattern = $archive_path . '/' . $dir . str_repeat('/*', 2 - count($module_description->array)) . '/javadocs/*.jar';
-			if (count(glob($javadocs_pattern)) > 0) {
+			if (module_has_javadocs($module_description, $archive_root)) {
 				echo '<li><a href="' . $dir . '/">' . $dir . '</a></li>';
 			}
 		}		
