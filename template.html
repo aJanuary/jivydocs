@@ -1,0 +1,15 @@
+<!doctype html>
+<html>
+	<head>
+		<title>JivyDocs</title>
+	</head>
+	<body>
+		<h1>Documentations</h1>
+		<h2><?php echo join(' / ', $module_description->parts) ?></h2>
+		<ul>
+			<?php foreach ($org_module_revs as $org_module_rev) { ?>
+			<li><a href="<?php echo $org_module_rev ?>/"><?php echo $org_module_rev ?></a></li>
+			<?php } ?>
+		</ul>
+	</body>
+</html>

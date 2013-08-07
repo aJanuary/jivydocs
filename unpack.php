@@ -1,6 +1,7 @@
 <?php
 	$archive_root = '/var/www/ivy/';
 	$cache_root = '/var/www/docs/cache/';
+	$template = '/var/wwww/docs/template.html';
 
 	class ModuleDescription {
 		private const MAX_PARTS = 3;
@@ -30,8 +31,8 @@
 			return count(glob($javadocs_patter)) > 0;
 		}
 
-		public function description() {
-			return join(' / ', $this->parts);
+		public function parts() {
+			return $this->parts;
 		}
 	}
 
@@ -63,8 +64,12 @@
 			die('unpacking archive ' . $archive_path . ' to ' . $cache_path . ' failed');
 		}
 	}
+
+	function render_template($template, $module_description, $org_module_revs) {
+		include $template;
+	}
 	
-	function make_index($module_description, $archive_root) {
+	function make_index($template, $module_description, $archive_root) {
 		$archive_path = $module_description->pathRelativeTo($archive_root);
 
 		if (!is_dir($archive_path)) {
@@ -72,15 +77,15 @@
 			return;
 		}
 
-		echo '<!doctype html><head><title>JivyDocs</title></head><body><h1>Documentations</h1><h2>' . $module_description->description() . '</h2><ul>';
+		$org_module_revs = array();
  
 		foreach (scandir($archive_path) as $org_module_rev) {
 			if ($module_description->hasJavadocsFor($org_module_rev, $archive_root)) {
-				echo '<li><a href="' . $org_module_rev . '/">' . $org_module_rev . '</a></li>';
+				$org_module_revs[] = $org_module_rev;
 			}
-		}		
+		}
 
-		echo '</ul></body></html>';
+		render_template($template, $module_description, $org_module_revs);
 	}
 
 	$module_description = new ModuleDescription($_SERVER['REQUEST_URI']);
@@ -88,6 +93,6 @@
 	if ($module_description->isComplete()) {
 		extract_javadocs($module_description, $archive_root, $cache_root);
 	} else {
-		make_index($module_description, $archive_root);
+		make_index($template, $module_description, $archive_root);
 	}
 ?>
