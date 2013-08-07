@@ -31,7 +31,7 @@
 		$archive_path = $archive_root . '/' . join('/', $module_description->array);
 
 		if (!is_dir($archive_path)) {
-			header("HTTP/1.0 404 Not Found");
+			header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found', true, 404);
 			return;
 		}
 
@@ -54,7 +54,7 @@
 
 		$zip = new ZipArchive;
 		if ($zip->open($javadoc_archive) !== TRUE) {
-			header("HTTP/1.0 404 Not Found");
+			header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found', true, 404);
 			return;
 		}
 
@@ -62,7 +62,8 @@
 			$zip->extractTo($cache_path);
 			header('Location: ' . $_SERVER['REQUEST_URI']);
 		} else {
-			echo 'unpacking archive ' . $archive_path . ' to ' . $cache_path . ' failed';
+			header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error', true, 500);
+			die('unpacking archive ' . $archive_path . ' to ' . $cache_path . ' failed');
 		}
 		$zip->close();
 	}
