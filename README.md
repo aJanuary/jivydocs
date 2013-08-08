@@ -34,8 +34,9 @@ repository should be
 
 ### Cache Directory
 The cache root is the path of the directory that the jar files will be
-extracted to, and the static documentation served from.  It must be readable
-and writable by `www-data`.
+extracted to, and the static documentation served from.  It must be relative
+to the document root and readable and writable by `www-data`.  If it is
+changed, it should be changes in the `.htaccess` file also.
 
 ### Template
 The template is a path to a PHP file that is used to generate the HTML for an
