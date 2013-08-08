@@ -17,13 +17,14 @@ Requirements
 Installation
 ------------
 
-`unpack.php` and `.htaccess` must be placed in the root of the site.
+`unpack.php`, `template.html` and `.htaccess` must be placed in the root of the
+site.
 
 Configuration
 -------------
 
-There are two variables to configure at the top of `unpack.php`: `$archive_root`
-and `$cache_root`
+There are three variables to configure at the top of `unpack.php`:
+`$archive_root`, `$cache_root` and `$template`.
 
 ### Archive Root
 The archive root is the path of the Ivy repository.  It must be a filesystem
@@ -35,6 +36,18 @@ repository should be
 The cache root is the path of the directory that the jar files will be
 extracted to, and the static documentation served from.  It must be readable
 and writable by `www-data`.
+
+### Template
+The template is a path to a PHP file that is used to generate the HTML for an
+index page.  It has references to the `$module_description` and
+`$org_module_revs` variables.
+
+`$module_description` is an array containing the `organisation`, `module` and
+`revision`, depending on how many are specified in the url. It will be empty
+for the root index page.
+
+`$org_module_revs` is an array of either organisations, modules or revisions,
+depending on which index page is being rendered.
 
 Warning
 -------
