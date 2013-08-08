@@ -1,20 +1,24 @@
 <?php
 	$archive_root = '/var/www/ivy/';
 	$cache_root = '/var/www/docs/cache/';
-	$template = '/var/wwww/docs/template.html';
+	$template = '/var/www/docs/template.html';
 
 	class ModuleDescription {
-		private const MAX_PARTS = 3;
-		private const MODULE_INDEX = 1;
+		const MAX_PARTS = 3;
+		const MODULE_INDEX = 1;
 		private $parts;
 
+		// Assumes the app is being hosted on the root of the domain
 		public function __construct($uri) {
-			// Assumes the app is being hosted on the root of the domain
-			$parts = array_slice(explode('/', $uri), 0, MAX_PARTS);
+			if ($uri == '') {
+				$this->parts = array();
+			} else {
+				$this->parts = array_slice(explode('/', rtrim($uri, '/')), 1, self::MAX_PARTS);
+			}
 		}
 
 		public function isComplete() {
-			return count($this->parts) == MAX_PARTS;
+			return count($this->parts) == self::MAX_PARTS;
 		}
 
 		public function pathRelativeTo($root) {
@@ -22,13 +26,13 @@
 		}
 
 		public function javadocPathRelativeTo($root) {
-			$this->pathRelativeTo($archive_root) . '/javadocs/' . $this->parts[MODULE_INDEX] . '.jar'
+			return $this->pathRelativeTo($root) . '/javadocs/' . $this->parts[self::MODULE_INDEX] . '.jar';
 		}
 
 		public function hasJavadocsFor($org_module_rev, $root) {
-			$missing_parts_pattern = str_repeat('/*', MAX_PARTS - 1 - count($this->parts)));
+			$missing_parts_pattern = str_repeat('/*', self::MAX_PARTS - 1 - count($this->parts));
 			$javadocs_pattern = $this->pathRelativeTo($root) . '/' . $org_module_rev . $missing_parts_pattern . '/javadocs/*.jar';
-			return count(glob($javadocs_patter)) > 0;
+			return count(glob($javadocs_pattern)) > 0;
 		}
 
 		public function parts() {
@@ -61,7 +65,7 @@
 		} else {
 			error500();
 			$zip->close();
-			die('unpacking archive ' . $archive_path . ' to ' . $cache_path . ' failed');
+			die('unpacking archive ' . $javadoc_archive . ' to ' . $cache_path . ' failed');
 		}
 	}
 
