@@ -89,7 +89,7 @@
 			}
 		}
 
-		render_template($template, $module_description, $org_module_revs);
+		render_template($template, $module_description->parts(), $org_module_revs);
 	}
 
 	$module_description = new ModuleDescription($_SERVER['REQUEST_URI']);

@@ -6,8 +6,8 @@
 	<body>
 		<h1>
 			docs
-			<?php if (count($module_description->parts()) > 0) {
-				echo ' / ' . join(' / ', $module_description->parts());
+			<?php if (count($module_description) > 0) {
+				echo ' / ' . join(' / ', $module_description);
 			} ?>
 		</h1>
 		<ul>
