@@ -8,7 +8,7 @@ RewriteRule ^cache/ - [L]
 RewriteRule ^(([^/]+/){3})$ $1index.html [L]
 
 # If the file exists in the cache, serve it up fro mthere
-RewriteCond /var/www/docs/cache%{REQUEST_URI} -f
+RewriteCond %{DOCUMENT_ROOT}/cache%{REQUEST_URI} -f
 RewriteRule ^(.*)$ cache/$1 [L]
 
 # Add trailing slash if it looks like a directory
