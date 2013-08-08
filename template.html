@@ -5,10 +5,14 @@
 	</head>
 	<body>
 		<h1>
-			docs
-			<?php if (count($module_description) > 0) {
-				echo ' / ' . join(' / ', $module_description);
-			} ?>
+			<a href="/">docs</a>
+			<?php
+				$url = '';
+				foreach ($module_description as $part) {
+					$url = $url . '/' . $part;
+					echo ' / <a href="' . $url . '">' . $part . "</a>";
+				}
+			?>
 		</h1>
 		<ul>
 			<?php foreach ($org_module_revs as $org_module_rev) { ?>
