@@ -1,22 +1,20 @@
 RewriteEngine on
 
-# The canonicaliser rule will try to add a slash to the end of unpack.php,
-# which stops it from working correctly.
-RewriteRule ^unpack.php$ unpack.php [L]
+# Stop rewriting rules if we've got to a cache or unpack page
+RewriteRule ^unpack.php - [L]
+RewriteRule ^cache/ - [L]
 
-# Canonicalise url by adding trailing slash to the end of module descriptor urls
-# Don't bother trying to canonicalise the urls inside a javadoc, as people are
-# unlikely to try and type them themselves, and it's too hard to figure out
-# what's a directory and what's a file.
+# The root of a document's page is index.html
+RewriteRule ^(([^/]+/){3})$ $1index.html [L]
+
+# If the file exists in the cache, serve it up fro mthere
+RewriteCond /var/www/docs/cache%{REQUEST_URI} -f
+RewriteRule ^(.*)$ cache/$1 [L]
+
+# Add trailing slash if it looks like a directory
+# and it's missing a trailing slash
 RewriteRule ^([^/]+(/[^/]+){0,2})$ http://%{HTTP_HOST}/$1/ [L,R=301]
 
-# Serve up cached files
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^((.+/){3}.+)$ cache/$1
-# The root of a document page uses index.html
-RewriteRule ^((.+/){2}.+)/$ cache/$1/index.html [L]
-
-# If a file doesn't exist, either create an index page if it's a module
-# descriptor url, or unpack the javadoc jar so it can be served from the cache.
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^.*$ unpack.php [L]
+# If the file isn't in the cache, generate an index or
+# extact a javadoc archive
+RewriteRule ^(.*)$ unpack.php?module_desc=$1 [L,QSA]

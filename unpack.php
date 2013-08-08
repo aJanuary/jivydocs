@@ -13,7 +13,7 @@
 			if ($uri == '') {
 				$this->parts = array();
 			} else {
-				$this->parts = array_slice(explode('/', rtrim($uri, '/')), 1, self::MAX_PARTS);
+				$this->parts = array_slice(explode('/', rtrim($uri, '/')), 0, self::MAX_PARTS);
 			}
 		}
 
@@ -92,7 +92,7 @@
 		render_template($template, $module_description->parts(), $org_module_revs);
 	}
 
-	$module_description = new ModuleDescription($_SERVER['REQUEST_URI']);
+	$module_description = new ModuleDescription($_GET['module_desc']);
 
 	if ($module_description->isComplete()) {
 		extract_javadocs($module_description, $archive_root, $cache_root);
